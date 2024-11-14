@@ -3,8 +3,10 @@
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const projectName = process.argv[2];
 
@@ -30,7 +32,7 @@ function copyTemplateFiles() {
 
   copyRecursive(templateDir, targetDir);
 
-  replacePlaceholders(targetDir, { projectName });
+  replacePlaceholdersInDirectory(targetDir, { projectName });
 }
 
 function copyRecursive(source, target) {
@@ -44,11 +46,11 @@ function copyRecursive(source, target) {
   }
 }
 
-function replacePlaceholders(directory, placeholderValues) {
+function replacePlaceholdersInDirectory(directory, placeholderValues) {
   fs.readdirSync(directory).forEach((file) => {
     const filePath = path.join(directory, file);
     if (fs.statSync(filePath).isDirectory()) {
-      replacePlaceholders(filePath, placeholderValues);
+      replacePlaceholdersInDirectory(filePath, placeholderValues);
     } else {
       let content = fs.readFileSync(filePath, 'utf8');
       Object.keys(placeholderValues).forEach((key) => {
@@ -65,8 +67,7 @@ try {
   console.log(`Project created at ${targetDir}`);
 
   process.chdir(targetDir);
-  execSync('npm install');
-  // execSync('git init');
+  execSync('npm install', { stdio: 'inherit' });
   console.log('Project setup complete!');
 } catch (error) {
   console.error('Error creating project:', error);

@@ -1,8 +1,11 @@
 {
   "name": "create-revo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React Typescript Tailwind Framer Build Tool",
   "main": "cli.js",
+  "bin": {
+    "create-revo": "./cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +18,6 @@
     "maybetarun"
   ],
   "author": "Tarun Gupta",
-  "license": "MIT"
+  "license": "MIT",
+  "type": "module"
 }
