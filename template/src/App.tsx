@@ -1,10 +1,12 @@
+import revo from './assets/revo.png';
+
 function App() {
 
   return (
     <>
       {/* Delete this and start your project */}
-      <div className="bg-[#0d0d0d] w-dvh h-dvh flex justify-center items-center">
-        <div className="text-white text-8xl">Revo</div>
+      <div className="bg-[#010203] w-dvh h-dvh flex justify-center items-center select-none">
+        <img src={revo} alt="Revo" className='p-36' />
       </div>
     </>
   )
