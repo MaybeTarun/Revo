@@ -2,7 +2,6 @@
 
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -63,12 +62,12 @@ function replacePlaceholdersInDirectory(directory, placeholderValues) {
 }
 
 try {
+  console.log('Setting up project');
   copyTemplateFiles();
   console.log(`Project created at ${targetDir}`);
-
   process.chdir(targetDir);
-  execSync('npm install', { stdio: 'inherit' });
   console.log('Project setup complete!');
+  console.log('Run npm install and you are set.');
 } catch (error) {
   console.error('Error creating project:', error);
   process.exit(1);
