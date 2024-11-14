@@ -66,7 +66,7 @@ try {
 
   process.chdir(targetDir);
   execSync('npm install');
-  execSync('git init');
+  // execSync('git init');
   console.log('Project setup complete!');
 } catch (error) {
   console.error('Error creating project:', error);
