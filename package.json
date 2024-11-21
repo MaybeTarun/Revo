@@ -1,7 +1,7 @@
 {
   "name": "create-revo",
-  "version": "1.2.1",
-  "description": "React Typescript Tailwind Framer Build Tool",
+  "version": "1.2.2",
+  "description": "React Project Setup Tool built on Vite",
   "main": "cli.js",
   "bin": {
     "create-revo": "./cli.js"

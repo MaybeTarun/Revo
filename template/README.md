@@ -1,2 +1,1 @@
-React Typescript Tailwind Framer Build Tool
-Uses Vite
+Edit it as per your project
