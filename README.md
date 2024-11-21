@@ -77,3 +77,13 @@ If you like Revo or have suggestions for improvement, let me know!
 You can reach out to me on [Twitter](https://twitter.com/MaybeTarun).
 
 Happy coding with Revo! 🎉
+
+---
+
+## 🙏 Credits
+
+Revo is built on top of amazing open-source tools. A big shoutout to:  
+
+- [Vite](https://vitejs.dev/) - The lightning-fast frontend build tool.  
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework for rapid UI development.  
+- [Framer Motion](https://www.framer.com/motion/) - The library for creating smooth and delightful animations.
