@@ -73,6 +73,7 @@ npm run preview
 
 ## 🌟 Feedback & Support
 
-If you like Revo or have suggestions for improvement, let us know!
+If you like Revo or have suggestions for improvement, let me know!
+You can reach out to me on [Twitter](https://twitter.com/MaybeTarun).
 
 Happy coding with Revo! 🎉
