@@ -1,6 +1,6 @@
 {
   "name": "create-revo",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "React Project Setup Tool built on Vite",
   "main": "cli.js",
   "bin": {
