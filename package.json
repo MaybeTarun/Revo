@@ -1,7 +1,7 @@
 {
   "name": "create-revo",
-  "version": "1.2.7",
-  "description": "React Project Setup Tool built on Vite",
+  "version": "2.0.0",
+  "description": "Project setup tool for ReactJS and NextJS",
   "main": "cli.js",
   "bin": {
     "create-revo": "./cli.js"
@@ -12,9 +12,14 @@
   "keywords": [
     "build",
     "tool",
-    "bread",
     "react",
+    "nextjs",
+    "next.js",
+    "typescript",
+    "tailwind",
+    "vite",
     "project",
+    "template",
     "maybetarun"
   ],
   "author": "Tarun Gupta",
