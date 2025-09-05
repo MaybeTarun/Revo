@@ -64,6 +64,20 @@ function replacePlaceholders(content, placeholderValues) {
   return content;
 }
 
+function updateProgress(percentage, message) {
+  const barLength = 20;
+  const filledLength = Math.round((percentage / 100) * barLength);
+  const bar = '█'.repeat(filledLength) + '░'.repeat(barLength - filledLength);
+  
+  // Clear the current line and move cursor to beginning
+  process.stdout.write('\r\x1b[K');
+  process.stdout.write(`[${bar}] ${percentage}% - ${message}`);
+  
+  if (percentage === 100) {
+    process.stdout.write('\n');
+  }
+}
+
 function copyTemplateFiles(templateType, projectName, targetDir) {
   const templateDir = path.join(__dirname, `template-${templateType}`);
 
@@ -73,14 +87,27 @@ function copyTemplateFiles(templateType, projectName, targetDir) {
     process.exit(1);
   }
 
+  console.log("\nSetting up project...");
+  
+  // Step 1: Create directory
+  updateProgress(10, "Creating project directory...");
   fs.mkdirSync(targetDir, { recursive: true });
 
+  // Step 2: Copy template files
+  updateProgress(30, "Copying template files...");
   copyRecursive(templateDir, targetDir);
 
+  // Step 3: Replace placeholders
+  updateProgress(60, "Configuring project files...");
   replacePlaceholdersInDirectory(targetDir, { projectName });
   
-  // Create .gitignore file
+  // Step 4: Create .gitignore file
+  updateProgress(80, "Creating .gitignore file...");
   createGitignoreFile(targetDir);
+
+  // Step 5: Finalizing
+  updateProgress(100, "Project setup complete!");
+  console.log(""); // New line after progress
 }
 
 function createGitignoreFile(projectDir) {
@@ -140,6 +167,11 @@ function copyRecursive(source, target) {
       const files = fs.readdirSync(source);
       
       for (const file of files) {
+        // Skip node_modules and other system directories
+        if (file === 'node_modules' || file === '.git' || file === 'dist' || file === 'build' || file === '.next') {
+          continue;
+        }
+        
         const sourcePath = path.join(source, file);
         const targetPath = path.join(target, file);
         copyRecursive(sourcePath, targetPath);
@@ -167,6 +199,11 @@ function replacePlaceholdersInDirectory(directory, placeholderValues) {
 
     for (const file of files) {
       const filePath = path.join(directory, file);
+      
+      // Skip node_modules and other system directories
+      if (file === 'node_modules' || file === '.git' || file === 'dist' || file === 'build' || file === '.next') {
+        continue;
+      }
       
       if (fs.statSync(filePath).isDirectory()) {
         replacePlaceholdersInDirectory(filePath, placeholderValues);
@@ -252,7 +289,6 @@ async function main() {
     console.log(`Project created successfully at ${finalTargetDir}`);
     process.chdir(finalTargetDir);
     
-    console.log("\nProject setup complete!");
     console.log("\nNext steps:");
     console.log("1. Run: npm install");
     console.log("2. Run: npm run dev");

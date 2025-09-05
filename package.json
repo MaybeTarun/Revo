@@ -1,6 +1,6 @@
 {
   "name": "create-revo",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Project setup tool for ReactJS and NextJS",
   "main": "cli.js",
   "bin": {
