@@ -1,6 +1,6 @@
-# Revo - Fast & Efficient React & Next.js Project Setup
+# revo
 
-**Revo** is a modern project setup tool that supports both **React** and **Next.js** projects. It's designed to streamline your workflow by providing clean project structures, pre-configured with **TypeScript** and **Tailwind CSS**, so you can focus on building amazing applications.
+**revo** is a modern project setup tool that supports both **React** and **Next.js** projects. It's designed to streamline your workflow by providing clean project structures, pre-configured with **TypeScript** and **Tailwind CSS**, so you can focus on building amazing applications.
 
 ---
 
@@ -92,16 +92,16 @@ npm run preview
 
 ## 🌟 Feedback & Support
 
-If you like Revo or have suggestions for improvement, let me know!
+If you like revo or have suggestions for improvement, let me know!
 You can reach out to me on [Twitter](https://twitter.com/MaybeTarun).
 
-Happy coding with Revo! 🎉
+Happy coding with revo! 🎉
 
 ---
 
 ## 🙏 Credits
 
-Revo is built on top of amazing open-source tools. A big shoutout to:  
+revo is built on top of amazing open-source tools. A big shoutout to:  
 
 - [React](https://react.dev/) - The library for building user interfaces
 - [Next.js](https://nextjs.org/) - The React framework for production

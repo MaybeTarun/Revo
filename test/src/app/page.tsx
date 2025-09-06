@@ -6,14 +6,14 @@ export default function Home() {
       <div className="flex flex-col items-center space-y-2">
         <Image 
           src="/revo.png" 
-          alt="Revo" 
+          alt="revo" 
           width={160}
           height={160}
           className="w-32 h-32 md:w-40 md:h-40 transition-transform duration-300 hover:scale-105"
           priority
         />
         <h1 className="text-white text-4xl md:text-6xl font-bold tracking-wider">
-          Revo
+          revo
         </h1>
         <p className="text-gray-400 text-lg md:text-xl text-center max-w-md">
           Your project is ready to go

@@ -2,18 +2,20 @@ import revo from './assets/revo.svg';
 
 function App() {
   return (
-    <div className="bg-black w-screen h-screen flex flex-col justify-center items-center select-none">
+    <div className="bg-[#EFF0EF] w-screen h-screen flex flex-col justify-center items-center select-none">
       <div className="flex flex-col items-center space-y-2">
-        <img 
-          src={revo} 
-          alt="Revo" 
-          className="w-32 h-32 md:w-40 md:h-40 transition-transform duration-300 hover:scale-105" 
-        />
-        <h1 className="text-white text-4xl md:text-6xl font-bold tracking-wider">
-          Revo
-        </h1>
-        <p className="text-gray-400 text-lg md:text-xl text-center max-w-md">
-          Your project is ready to go
+        <div className="flex justify-center items-center space-x-4">
+          <img 
+            src={revo} 
+            alt="revo" 
+            className="w-32 h-32 md:w-32 md:h-32" 
+          />
+          <h1 className="text-[#2D2A32] text-6xl md:text-[10rem] font-semibold leading-none -mt-10">
+            revo
+          </h1>
+        </div>
+        <p className="text-[#2D2A32] text-base md:text-lg uppercase text-center max-w-md">
+          your project is ready to go
         </p>
       </div>
     </div>

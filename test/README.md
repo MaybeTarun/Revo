@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-revo`](https://www.npmjs.com/package/create-revo) for {{projectName}}.
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-revo`](https://www.npmjs.com/package/create-revo) for test.
 
 ## Getting Started
 
