@@ -72,7 +72,7 @@ function copyTemplateFiles(templateType, projectName, targetDir) {
     process.exit(1);
   }
 
-  console.log("\nSetting up project...");
+  console.log("\nSetting up project...\n");
   
   fs.mkdirSync(targetDir, { recursive: true });
 
@@ -84,7 +84,6 @@ function copyTemplateFiles(templateType, projectName, targetDir) {
   
   createGitignoreFile(targetDir);
 
-  console.log(`Project setup complete.`);
 }
 
 function createGitignoreFile(projectDir) {
@@ -261,12 +260,12 @@ async function main() {
     const copyDurationMs = Date.now() - copyStartMs;
     
     console.log(`Time Taken - ${copyDurationMs}ms.`);
-    console.log(`Project created successfully at ${finalTargetDir}`);
+    console.log(`\nProject created at ${finalTargetDir}`);
     process.chdir(finalTargetDir);
     
     console.log("\nNext steps:");
-    console.log("1. Run: npm install");
-    console.log("2. Run: npm run dev");
+    console.log("1. npm install");
+    console.log("2. npm run dev");
   } catch (error) {
     console.error("Error creating project:", error.message);
     process.exit(1);
