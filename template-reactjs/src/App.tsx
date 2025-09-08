@@ -1,22 +1,31 @@
-import revo from './assets/revo.svg';
+import { Revo } from 'revoicons';
 
 function App() {
   return (
-    <div className="bg-[#EFF0EF] w-screen h-screen flex flex-col justify-center items-center select-none">
-      <div className="flex flex-col items-center space-y-2">
-        <div className="flex justify-center items-center space-x-4">
-          <img 
-            src={revo} 
-            alt="revo" 
-            className="w-32 h-32 md:w-32 md:h-32" 
-          />
-          <h1 className="text-[#2D2A32] text-6xl md:text-[10rem] font-semibold leading-none -mt-10">
-            revo
-          </h1>
+    <div className="bg-white w-full h-screen flex flex-col">
+      <div className="h-[10vh] w-full border-b border-gray-400">
+        <div className="h-full w-full md:w-[70vw] mx-auto border-x border-gray-400" />
+      </div>
+      <div className="h-full w-full md:w-[70vw] mx-auto border-x border-gray-400 flex flex-col justify-center items-center relative overflow-hidden">
+        <div className="absolute inset-0 -z-0 bg-[linear-gradient(to_right,theme(colors.gray.100)_1px,transparent_1px),linear-gradient(to_bottom,theme(colors.gray.100)_1px,transparent_1px)] bg-[length:16px_16px]" />
+        <div className="flex flex-col items-center space-y-2 relative z-10">
+          <div className="flex justify-center items-center space-x-2 md:space-x-4">
+            <Revo size={128} className='hidden md:block'/>
+            <Revo size={64} className='block md:hidden'/>
+            <h1 className="text-black text-[5rem] md:text-[10rem] font-semibold leading-none -mt-6 md:-mt-12">
+              revo
+            </h1>
+          </div>
+          <p className="text-black text-sm md:text-lg uppercase text-center max-w-md">
+            your project is ready to go
+          </p>
+          <p className="text-black/80 text-xs tracking-wide">
+            setup in under 500ms
+          </p>
         </div>
-        <p className="text-[#2D2A32] text-base md:text-lg uppercase text-center max-w-md">
-          your project is ready to go
-        </p>
+      </div>
+      <div className="h-[10vh] w-full border-t border-gray-400">
+        <div className="h-full w-full md:w-[70vw] mx-auto border-x border-gray-400" />
       </div>
     </div>
   )
