@@ -1,6 +1,6 @@
 {
   "name": "create-revo",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Project setup tool for ReactJS and NextJS",
   "main": "cli.js",
   "bin": {
@@ -24,5 +24,9 @@
   ],
   "author": "Tarun Gupta",
   "license": "MIT",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "lenis": "^1.3.11",
+    "revoicons": "^1.3.6"
+  }
 }
