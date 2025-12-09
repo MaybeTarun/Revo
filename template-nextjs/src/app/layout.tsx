@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import LenisWrapper from "@/components/LenisWrapper";
+import LenisWrapper from "@/components/layout/LenisWrapper";
 
 // replace the below metadata according to your project
 
@@ -9,7 +9,8 @@ export const metadata: Metadata = {
   description: "Built with revo",
   keywords: ["revo", "next.js", "npm", "package"],
   authors: [{ name: "maybetarun.in" }],
-  viewport: "width=device-width, initial-scale=1.0",
+  creator: "MaybeTarun.in",
+  publisher: "MaybeTarun.in",
   robots: "index, follow",
   icons: "/revo.svg",
 

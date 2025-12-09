@@ -1,6 +1,6 @@
 import { Revo } from 'revoicons';
 
-export default function App() {
+export default function NotFound() {
   return (
     <div className="bg-white w-full h-screen flex flex-col">
       <div className="h-[10vh] w-full border-b border-gray-400">
@@ -10,17 +10,12 @@ export default function App() {
         <div className="absolute inset-0 -z-0 bg-[linear-gradient(to_right,theme(colors.gray.100)_1px,transparent_1px),linear-gradient(to_bottom,theme(colors.gray.100)_1px,transparent_1px)] bg-[length:16px_16px]" />
         <div className="flex flex-col items-center space-y-2 relative z-10">
           <div className="flex justify-center items-center space-x-2 md:space-x-4">
-            <Revo size={128} className='hidden md:block'/>
-            <Revo size={64} className='block md:hidden'/>
-            <h1 className="text-black text-[5rem] md:text-[10rem] font-semibold leading-none -mt-6 md:-mt-12">
-              revo
+            <h1 className="text-black text-[5rem] md:text-[6rem] font-semibold leading-none text-center uppercase">
+              page not found
             </h1>
           </div>
-          <p className="text-black text-sm md:text-lg uppercase text-center max-w-md">
-            your project is ready to go
-          </p>
-          <p className="text-black/80 text-xs tracking-wide">
-            setup in under 50ms
+          <p className="text-black/80 text-sm md:text-lg text-center max-w-md">
+            website built with <a href='https://revo-murex.vercel.app' target='_blank' className='text-black cursor-pointer'><Revo size={16} className='inline-block mr-1 -mt-[1px]' />revo</a>
           </p>
         </div>
       </div>
@@ -28,5 +23,5 @@ export default function App() {
         <div className="h-full w-full md:w-[70vw] mx-auto border-x border-gray-400" />
       </div>
     </div>
-  )
+  );
 }
