@@ -10,12 +10,12 @@ First, run the development server:
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) with your browser to see the result.
+Open [http://localhost:7350](http://localhost:7350) with your browser to see the result.
 
 ## Features
 
 - ⚡ Vite for fast development
-- ⚛️ React 18 with TypeScript
+- ⚛️ React 19 with TypeScript
 - 🎨 Tailwind CSS for styling
 - 🔧 ESLint for code quality
 - 🚀 Motion for animations

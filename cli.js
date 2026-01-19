@@ -4,12 +4,89 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import readline from "readline";
+import { createRequire } from "module";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const require = createRequire(import.meta.url);
+const { version: VERSION } = require('./package.json');
 
-const projectName = process.argv[2];
+// ============================================================================
+// CONSTANTS
+// ============================================================================
 
+const TEMPLATES = {
+  reactjs: 'React.js + TypeScript + TailwindCSS + Vite',
+  nextjs: 'Next.js + TypeScript + TailwindCSS'
+};
+
+const IGNORE_PATTERNS = ['node_modules', '.git', 'dist', 'build', '.next', '.cache'];
+
+// ============================================================================
+// UTILITIES
+// ============================================================================
+
+/**
+ * Validate project name
+ */
+function validateProjectName(name) {
+  if (!name || name.trim() === '') {
+    return { valid: false, error: 'Project name cannot be empty' };
+  }
+
+  if (!/^[a-zA-Z0-9-_~]+$/.test(name)) {
+    return {
+      valid: false,
+      error: 'Project name can only contain letters, numbers, hyphens, underscores, and tildes'
+    };
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Sanitize project name for package.json
+ */
+function sanitizeProjectName(name) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9-_~]/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+/**
+ * Detect package manager
+ */
+function detectPackageManager() {
+  const userAgent = process.env.npm_config_user_agent || '';
+
+  if (userAgent.includes('bun')) return 'bun';
+  if (userAgent.includes('pnpm')) return 'pnpm';
+  if (userAgent.includes('yarn')) return 'yarn';
+
+  return 'npm';
+}
+
+/**
+ * Get commands for package manager
+ */
+function getCommands(pm) {
+  const commands = {
+    npm: { install: 'npm install', dev: 'npm run dev' },
+    yarn: { install: 'yarn', dev: 'yarn dev' },
+    pnpm: { install: 'pnpm install', dev: 'pnpm dev' },
+    bun: { install: 'bun install', dev: 'bun dev' }
+  };
+  return commands[pm] || commands.npm;
+}
+
+// ============================================================================
+// PROMPTS
+// ============================================================================
+
+/**
+ * Ask for project name
+ */
 function askProjectName() {
   return new Promise((resolve) => {
     const rl = readline.createInterface({
@@ -17,13 +94,28 @@ function askProjectName() {
       output: process.stdout
     });
 
-    rl.question('Enter project name: ', (answer) => {
-      rl.close();
-      resolve(answer.trim());
-    });
+    const ask = () => {
+      rl.question('Project name: ', (answer) => {
+        const name = answer.trim();
+        const validation = validateProjectName(name);
+
+        if (!validation.valid) {
+          console.log(`Error: ${validation.error}`);
+          ask();
+        } else {
+          rl.close();
+          resolve(name);
+        }
+      });
+    };
+
+    ask();
   });
 }
 
+/**
+ * Ask for template choice
+ */
 function askTemplateChoice() {
   return new Promise((resolve) => {
     const rl = readline.createInterface({
@@ -31,14 +123,14 @@ function askTemplateChoice() {
       output: process.stdout
     });
 
-    console.log('\nChoose your template:');
-    console.log('1. React.js + Typescript + TailwindCSS + Vite');
-    console.log('2. Next.js + Typescript + TailwindCSS');
+    console.log('\nSelect template:');
+    console.log('1. React.js + TypeScript + TailwindCSS + Vite');
+    console.log('2. Next.js + TypeScript + TailwindCSS');
 
-    const askQuestion = () => {
-      rl.question('Enter your choice (1 or 2): ', (answer) => {
+    const ask = () => {
+      rl.question('\nChoice (1 or 2): ', (answer) => {
         const choice = answer.trim().toLowerCase();
-        
+
         if (choice === '1' || choice === 'react' || choice === 'reactjs') {
           rl.close();
           resolve('reactjs');
@@ -47,47 +139,82 @@ function askTemplateChoice() {
           resolve('nextjs');
         } else {
           console.log('Invalid choice. Please enter 1 or 2.');
-          askQuestion();
+          ask();
         }
       });
     };
 
-    askQuestion();
+    ask();
   });
 }
 
-function replacePlaceholders(content, placeholderValues) {
-  Object.keys(placeholderValues).forEach((key) => {
-    const placeholder = `{{${key}}}`;
-    content = content.replace(new RegExp(placeholder, "g"), placeholderValues[key]);
-  });
-  return content;
-}
+// ============================================================================
+// FILE OPERATIONS
+// ============================================================================
 
-function copyTemplateFiles(templateType, projectName, targetDir) {
-  const templateDir = path.join(__dirname, `template-${templateType}`);
+/**
+ * Copy files recursively
+ */
+function copyRecursive(source, target) {
+  if (fs.statSync(source).isDirectory()) {
+    fs.mkdirSync(target, { recursive: true });
+    const files = fs.readdirSync(source);
 
-  if (!fs.existsSync(templateDir)) {
-    console.error(`Template directory 'template-${templateType}' not found!`);
-    process.exit(1);
+    for (const file of files) {
+      if (IGNORE_PATTERNS.includes(file)) continue;
+
+      const sourcePath = path.join(source, file);
+      const targetPath = path.join(target, file);
+      copyRecursive(sourcePath, targetPath);
+    }
+  } else {
+    fs.copyFileSync(source, target);
   }
-
-  console.log("\nSetting up project...\n");
-  
-  fs.mkdirSync(targetDir, { recursive: true });
-
-  copyRecursive(templateDir, targetDir);
-
-  replacePlaceholdersInDirectory(targetDir, {
-    projectName
-  });
-  
-  createGitignoreFile(targetDir);
-
 }
 
-function createGitignoreFile(projectDir) {
-  const gitignoreContent = `# dependencies
+/**
+ * Replace placeholders in files
+ */
+function replacePlaceholders(directory, projectName) {
+  const sanitized = sanitizeProjectName(projectName);
+  const files = fs.readdirSync(directory);
+
+  for (const file of files) {
+    const filePath = path.join(directory, file);
+
+    if (IGNORE_PATTERNS.includes(file)) continue;
+
+    if (fs.statSync(filePath).isDirectory()) {
+      replacePlaceholders(filePath, projectName);
+    } else if (file.endsWith('.json') || file.endsWith('.html') ||
+      file.endsWith('.tsx') || file.endsWith('.ts') ||
+      file.endsWith('.jsx') || file.endsWith('.js') ||
+      file.endsWith('.md')) {
+
+      let content = fs.readFileSync(filePath, "utf8");
+
+      if (file === "package.json") {
+        try {
+          const json = JSON.parse(content);
+          json.name = sanitized;
+          content = JSON.stringify(json, null, 2);
+        } catch (e) {
+          content = content.replace(/\{\{projectName\}\}/g, sanitized);
+        }
+      } else {
+        content = content.replace(/\{\{projectName\}\}/g, projectName);
+      }
+
+      fs.writeFileSync(filePath, content);
+    }
+  }
+}
+
+/**
+ * Create .gitignore
+ */
+function createGitignore(projectDir) {
+  const content = `# dependencies
 /node_modules
 /.pnp
 .pnp.*
@@ -106,6 +233,7 @@ function createGitignoreFile(projectDir) {
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -116,8 +244,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+bun-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
 
 # vercel
@@ -128,146 +257,143 @@ yarn-error.log*
 next-env.d.ts
 `;
 
-  try {
-    const gitignorePath = path.join(projectDir, '.gitignore');
-    fs.writeFileSync(gitignorePath, gitignoreContent);
-  } catch (error) {
-    //
-  }
+  fs.writeFileSync(path.join(projectDir, '.gitignore'), content);
 }
 
-function copyRecursive(source, target) {
-  try {
-    if (fs.statSync(source).isDirectory()) {
-      fs.mkdirSync(target, { recursive: true });
-      const files = fs.readdirSync(source);
-      
-      for (const file of files) {
-        if (file === 'node_modules' || file === '.git' || file === 'dist' || file === 'build' || file === '.next') {
-          continue;
-        }
-        
-        const sourcePath = path.join(source, file);
-        const targetPath = path.join(target, file);
-        copyRecursive(sourcePath, targetPath);
-      }
-    } else {
-      fs.copyFileSync(source, target);
+// ============================================================================
+// CLI ARGS
+// ============================================================================
+
+/**
+ * Parse CLI arguments
+ */
+function parseArgs() {
+  const args = process.argv.slice(2);
+  const options = {
+    projectName: null,
+    template: null,
+    help: false,
+    version: false
+  };
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+
+    if (arg === '-h' || arg === '--help') {
+      options.help = true;
+    } else if (arg === '-v' || arg === '--version') {
+      options.version = true;
+    } else if (arg === '-t' || arg === '--template') {
+      options.template = args[++i];
+    } else if (!arg.startsWith('-') && !options.projectName) {
+      options.projectName = arg;
     }
-  } catch (error) {
-    console.error(`Error copying ${source} to ${target}:`, error.message);
-    throw error;
   }
+
+  return options;
 }
 
-function sanitizeProjectName(name) {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9-_~]/g, '-')
-    .replace(/^-+|-+$/g, '');
+/**
+ * Show help
+ */
+function showHelp() {
+  console.log('\nUsage: create-revo <project-name> [options]');
+  console.log('\nOptions:');
+  console.log('  -t, --template <type>    Template type (react or next)');
+  console.log('  -h, --help               Show help');
+  console.log('  -v, --version            Show version');
+  console.log('\nExamples:');
+  console.log('  create-revo my-app');
+  console.log('  create-revo my-app --template react');
+  console.log('  create-revo my-app -t next\n');
 }
 
-function replacePlaceholdersInDirectory(directory, placeholderValues) {
-  try {
-    const sanitizedProjectName = sanitizeProjectName(placeholderValues.projectName);
-    const files = fs.readdirSync(directory);
-
-    for (const file of files) {
-      const filePath = path.join(directory, file);
-      
-      if (file === 'node_modules' || file === '.git' || file === 'dist' || file === 'build' || file === '.next') {
-        continue;
-      }
-      
-      if (fs.statSync(filePath).isDirectory()) {
-        replacePlaceholdersInDirectory(filePath, placeholderValues);
-      } else {
-        let content = fs.readFileSync(filePath, "utf8");
-
-        if (file === "package.json" || file === "package-lock.json") {
-          try {
-            const jsonContent = JSON.parse(content);
-            jsonContent.name = sanitizedProjectName;
-            
-            if (jsonContent.dependencies) {
-              Object.keys(jsonContent.dependencies).forEach(dep => {
-                jsonContent.dependencies[dep] = "latest";
-              });
-            }
-            if (jsonContent.devDependencies) {
-              Object.keys(jsonContent.devDependencies).forEach(dep => {
-                jsonContent.devDependencies[dep] = "latest";
-              });
-            }
-            
-            if (placeholderValues.scaffoldDurationMs) {
-              jsonContent.revoMetrics = {
-                scaffoldDurationMs: Number(placeholderValues.scaffoldDurationMs)
-              };
-            }
-
-            content = JSON.stringify(jsonContent, null, 2);
-          } catch (jsonError) {
-            console.warn(`Warning: Could not parse JSON in ${filePath}:`, jsonError.message);
-            content = content.replace(/\{\{projectName\}\}/g, sanitizedProjectName);
-          }
-        } else if (file === "index.html" || file.endsWith(".html")) {
-          content = content.replace(/\{\{projectName\}\}/g, placeholderValues.projectName);
-          content = content.replace(/Revo/g, placeholderValues.projectName);
-          // removed scaffoldDurationMs placeholder handling
-        } else if (file.endsWith(".tsx") || file.endsWith(".ts") || file.endsWith(".jsx") || file.endsWith(".js")) {
-          content = content.replace(/\{\{projectName\}\}/g, placeholderValues.projectName);
-          content = content.replace(/Create Next App/g, placeholderValues.projectName);
-          content = content.replace(/Generated by create next app/g, `Generated by ${placeholderValues.projectName}`);
-          // removed scaffoldDurationMs placeholder handling
-        } else {
-          content = replacePlaceholders(content, placeholderValues);
-        }
-
-        fs.writeFileSync(filePath, content);
-      }
-    }
-  } catch (error) {
-    console.error(`Error processing directory ${directory}:`, error.message);
-    throw error;
-  }
-}
+// ============================================================================
+// MAIN
+// ============================================================================
 
 async function main() {
+  const options = parseArgs();
+
+  if (options.help) {
+    showHelp();
+    process.exit(0);
+  }
+
+  if (options.version) {
+    console.log(VERSION);
+    process.exit(0);
+  }
+
   try {
-    let finalProjectName = projectName;
-    
-    if (!finalProjectName) {
-      finalProjectName = await askProjectName();
+    // Get project name
+    let projectName = options.projectName;
+    if (!projectName) {
+      projectName = await askProjectName();
+    } else {
+      const validation = validateProjectName(projectName);
+      if (!validation.valid) {
+        console.log(`Error: ${validation.error}`);
+        process.exit(1);
+      }
     }
-    
-    if (!/^[a-zA-Z0-9-_~]+$/.test(finalProjectName)) {
-      console.error("Project name can only contain letters, numbers, hyphens, underscores, and tildes");
+
+    // Check if directory exists
+    const targetDir = path.join(process.cwd(), projectName);
+    if (fs.existsSync(targetDir)) {
+      console.log(`Error: Directory '${projectName}' already exists`);
       process.exit(1);
     }
-    
-    const finalTargetDir = path.join(process.cwd(), finalProjectName);
-    
-    if (fs.existsSync(finalTargetDir)) {
-      console.error(`Directory '${finalProjectName}' already exists! Please choose a different name.`);
+
+    // Get template
+    let template = options.template;
+    if (template) {
+      if (template === 'react' || template === '1') template = 'reactjs';
+      else if (template === 'next' || template === '2') template = 'nextjs';
+
+      if (!TEMPLATES[template]) {
+        console.log(`Error: Invalid template '${options.template}'`);
+        console.log('Valid templates: react, next');
+        process.exit(1);
+      }
+    } else {
+      template = await askTemplateChoice();
+    }
+
+    // Create project
+    const templateDir = path.join(__dirname, `template-${template}`);
+
+    if (!fs.existsSync(templateDir)) {
+      console.log(`Error: Template directory not found`);
       process.exit(1);
     }
-    
-    const templateType = await askTemplateChoice();
-    
-    const copyStartMs = Date.now();
-    copyTemplateFiles(templateType, finalProjectName, finalTargetDir);
-    const copyDurationMs = Date.now() - copyStartMs;
-    
-    console.log(`Time Taken - ${copyDurationMs}ms.`);
-    console.log(`\nProject created at ${finalTargetDir}`);
-    process.chdir(finalTargetDir);
-    
-    console.log("\nNext steps:");
-    console.log("1. npm install");
-    console.log("2. npm run dev");
+
+    console.log(`\nCreating project...`);
+
+    const start = Date.now();
+
+    // Copy files
+    fs.mkdirSync(targetDir, { recursive: true });
+    copyRecursive(templateDir, targetDir);
+
+    // Configure
+    replacePlaceholders(targetDir, projectName);
+    createGitignore(targetDir);
+
+    const duration = Date.now() - start;
+
+    // Done
+    const pm = detectPackageManager();
+    const cmds = getCommands(pm);
+
+    console.log(`\nDone in ${duration}ms\n`);
+    console.log('Next steps:');
+    console.log(`  cd ${projectName}`);
+    console.log(`  ${cmds.install}`);
+    console.log(`  ${cmds.dev}\n`);
+
   } catch (error) {
-    console.error("Error creating project:", error.message);
+    console.log(`\nError: ${error.message}\n`);
     process.exit(1);
   }
 }

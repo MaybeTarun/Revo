@@ -5,6 +5,7 @@ import LenisWrapper from "@/components/layout/LenisWrapper";
 // replace the below metadata according to your project
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://maybetarun.in'),
   title: "revo",
   description: "Built with revo",
   keywords: ["revo", "next.js", "npm", "package"],

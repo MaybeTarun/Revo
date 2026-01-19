@@ -1,110 +1,244 @@
-# revo
+# create-revo
 
-**revo** is a modern project setup tool that supports both **React** and **Next.js** projects. It's designed to streamline your workflow by providing clean project structures, pre-configured with **TypeScript** and **Tailwind CSS**, so you can focus on building amazing applications.
+**create-revo** is a fast, minimal project setup tool for **React** and **Next.js** projects. Get started with modern, production-ready templates in seconds.
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
-- **Two Framework Options**: Choose between React (Vite) or Next.js
-- **TypeScript Ready**: Pre-configured TypeScript for type safety
-- **Tailwind CSS**: Fully configured for utility-first styling right out of the box
-- **Latest Dependencies**: Always uses the latest versions of all packages
-- **Interactive Setup**: Simple CLI with progress indicators
-- **Clean Project Structure**: Thoughtfully organized file structure for maintainable code
+- **Two Framework Options**: React (Vite) or Next.js
+- **TypeScript Ready**: Pre-configured TypeScript setup
+- **Tailwind CSS**: Fully configured utility-first styling
+- **Latest Versions**: React 19, Next.js 16, and latest dependencies
+- **Fast Setup**: Project created in ~200ms
+- **Clean Structure**: Organized, maintainable project structure
+- **CLI Flags**: Skip prompts with command-line options
 
 ---
 
 ## 📦 What You Get
 
-### React Template (Vite)
-1. **React 18** with TypeScript
-2. **Vite** for lightning-fast development
-3. **Tailwind CSS** for styling
-4. **ESLint** for code quality
-5. **Motion** for animations
+### React Template
+- **React 19** with TypeScript
+- **Vite 6** for lightning-fast development
+- **Tailwind CSS 3** for styling
+- **ESLint 9** for code quality
+- **Framer Motion** for animations
+- **Lenis** for smooth scrolling
+- **React Router 7** for routing
+- **Revoicons** for icons
 
 ### Next.js Template
-1. **Next.js 15** with App Router
-2. **TypeScript** for type safety
-3. **Tailwind CSS** for styling
-4. **ESLint** for code quality
-5. **Optimized** for production
+- **Next.js 16** with App Router
+- **React 19** with TypeScript
+- **Tailwind CSS 4** for styling
+- **ESLint 9** for code quality
+- **Framer Motion** for animations
+- **Lenis** for smooth scrolling
+- **Revoicons** for icons
 
 ---
 
-## 🛠️ Installation
-
-### Prerequisites
-Make sure you have Node.js (>=14.x) and npm/yarn installed.
+## � Quick Start
 
 ### Create a New Project
 
-**Option 1: With project name**
 ```bash
-npx create-revo my-awesome-project
+npx create-revo my-app
 ```
 
-**Option 2: Interactive mode (will prompt for project name)**
+Then follow the prompts to select your template.
+
+### With Template Flag (Skip Prompt)
+
+**React Template:**
+```bash
+npx create-revo my-app --template react
+# or
+npx create-revo my-app -t react
+```
+
+**Next.js Template:**
+```bash
+npx create-revo my-app --template next
+# or
+npx create-revo my-app -t next
+```
+
+### Interactive Mode
+
 ```bash
 npx create-revo
 ```
 
-### Choose Your Template
-You'll be prompted to choose between:
-1. **React.js** - Vite + TypeScript + Tailwind CSS
-2. **Next.js** - App Router + TypeScript + Tailwind CSS
+You'll be prompted for:
+1. Project name
+2. Template choice (React or Next.js)
 
-### Navigate to Your Project
+---
+
+## 🛠️ CLI Options
+
 ```bash
-cd [project-name]
+create-revo <project-name> [options]
 ```
 
-### Install Dependencies
+### Options
+
+| Flag | Alias | Description |
+|------|-------|-------------|
+| `--template <type>` | `-t` | Template type: `react` or `next` |
+| `--help` | `-h` | Show help message |
+| `--version` | `-v` | Show version number |
+
+### Examples
+
 ```bash
-npm install
+# Interactive mode
+npx create-revo
+
+# With project name
+npx create-revo my-app
+
+# With template
+npx create-revo my-app -t react
+
+# Show help
+npx create-revo --help
+
+# Show version
+npx create-revo --version
 ```
 
 ---
 
-## 🏃 Getting Started
+## 📁 Project Structure
 
-
-### Start the Development Server
-
+### React Template
 ```
+my-app/
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── pages/
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── .gitignore
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+└── tailwind.config.js
+```
+
+### Next.js Template
+```
+my-app/
+├── public/
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   └── components/
+├── .gitignore
+├── package.json
+├── tsconfig.json
+└── tailwind.config.ts
+```
+
+---
+
+## 🏃 Development
+
+After creating your project:
+
+```bash
+cd my-app
+npm install
 npm run dev
 ```
 
-### Build for Production
+Your app will be running at:
+- **React (Vite)**: http://localhost:7350
+- **Next.js**: http://localhost:7350
 
-```
-npm run build
+---
+
+## 📜 Available Scripts
+
+### React Template
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run preview  # Preview production build
+npm run lint     # Run ESLint
 ```
 
-### Preview Production Build
-
-```
-npm run preview
+### Next.js Template
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm start        # Start production server
+npm run lint     # Run ESLint
 ```
 
 ---
 
-## 🌟 Feedback & Support
+## 🌟 Why create-revo?
 
-If you like revo or have suggestions for improvement, let me know!
-You can reach out to me on [Twitter](https://twitter.com/MaybeTarun).
+- **Fast**: Creates projects in ~200ms
+- **Minimal**: No unnecessary bloat or features
+- **Modern**: Latest versions of React, Next.js, and dependencies
+- **Simple**: Clean, straightforward CLI
+- **Flexible**: Choose your framework and package manager
 
-Happy coding with revo! 🎉
+---
+
+## 🔧 Package Managers
+
+create-revo works with all major package managers:
+
+```bash
+# npm
+npx create-revo my-app
+
+# yarn
+yarn create revo my-app
+
+# pnpm
+pnpm create revo my-app
+
+# bun
+bunx create-revo my-app
+```
+
+The CLI automatically detects your package manager and shows the appropriate commands.
 
 ---
 
 ## 🙏 Credits
 
-revo is built on top of amazing open-source tools. A big shoutout to:  
+Built with amazing open-source tools:
 
-- [React](https://react.dev/) - The library for building user interfaces
-- [Next.js](https://nextjs.org/) - The React framework for production
-- [Vite](https://vitejs.dev/) - The lightning-fast frontend build tool
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework for rapid UI development
-- [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript at any scale
+- [React](https://react.dev/) - UI library
+- [Next.js](https://nextjs.org/) - React framework
+- [Vite](https://vitejs.dev/) - Build tool
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+- [TypeScript](https://www.typescriptlang.org/) - Type safety
+- [Framer Motion](https://www.framer.com/motion/) - Animations
+- [Lenis](https://lenis.studiofreight.com/) - Smooth scrolling
+
+---
+
+## 📝 License
+
+MIT
+
+---
+
+## 🌟 Feedback & Support
+
+If you like create-revo or have suggestions, reach out on [Twitter](https://twitter.com/MaybeTarun).
+
+Happy coding! 🚀
